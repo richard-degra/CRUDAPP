@@ -5,16 +5,15 @@ const bodyParser = require('body-parser');
 const product = require('./routes/product.route'); // rotas do produto //
 const app = express();
 
-// Configurar conexão mongoose
+// Configurar mongoose
 
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://admin:admin@c9-dkdh5.mongodb.net/test?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true  });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
+const mongoose = require('mongoose');
+let dev_db_url = 'mongodb+srv://admin:admin@c9-dkdh5.mongodb.net/test?retryWrites=true&w=majority';
+let mongoDB = process.env.MONGODB_URI || dev_db_url;
+mongoose.connect(mongoDB);
+mongoose.Promise = global.Promise;
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
